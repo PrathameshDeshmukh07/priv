@@ -61,10 +61,13 @@ export default function MedicalBayesianNetwork() {
   const [fever, setFever] = useState(false);
   const [cough, setCough] = useState(false);
   const [positiveTest, setPositiveTest] = useState(false);
-  const [posterior, setPosterior] = useState(0);
+  const [posteriorProbability, setPosteriorProbability] = useState(0);
   const [hasDiagnosed, setHasDiagnosed] = useState(false);
 
-  const percentage = useMemo(() => Math.round(posterior * 1000) / 10, [posterior]);
+  const percentage = useMemo(
+    () => Math.round(posteriorProbability * 100 * 10) / 10,
+    [posteriorProbability],
+  );
 
   const diagnose = () => {
     const probability = calculatePosterior({
@@ -73,7 +76,7 @@ export default function MedicalBayesianNetwork() {
       test: positiveTest,
     });
 
-    setPosterior(probability);
+    setPosteriorProbability(probability);
     setHasDiagnosed(true);
   };
 
@@ -137,7 +140,7 @@ export default function MedicalBayesianNetwork() {
         </Card>
 
         <motion.div
-          key={`${posterior}-${hasDiagnosed}`}
+          key={`${posteriorProbability}-${hasDiagnosed}`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
