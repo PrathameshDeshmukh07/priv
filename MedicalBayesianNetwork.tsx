@@ -23,6 +23,8 @@ type EvidenceState = {
 const evidenceContribution = (isPresent: boolean, probability: number) =>
   isPresent ? probability : 1 - probability;
 
+const roundToOneDecimal = (value: number) => Math.round(value * 10) / 10;
+
 const calculatePosterior = ({ fever, cough, test }: EvidenceState) => {
   const pEvidenceGivenDisease =
     evidenceContribution(fever, LIKELIHOODS.fever.disease) *
@@ -64,10 +66,7 @@ export default function MedicalBayesianNetwork() {
   const [posteriorProbability, setPosteriorProbability] = useState(0);
   const [hasDiagnosed, setHasDiagnosed] = useState(false);
 
-  const percentage = useMemo(
-    () => Math.round(posteriorProbability * 100 * 10) / 10,
-    [posteriorProbability],
-  );
+  const percentage = useMemo(() => roundToOneDecimal(posteriorProbability * 100), [posteriorProbability]);
 
   const diagnose = () => {
     const probability = calculatePosterior({
